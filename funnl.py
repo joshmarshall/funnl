@@ -17,6 +17,8 @@ try:
 except ImportError:
     import simplejson as json
 from wsgiref.simple_server import make_server, WSGIRequestHandler
+from wsgiref.simple_server import WSGIServer
+from SocketServer import ThreadingMixIn
 import traceback
 
 HTTP_CODES = {
@@ -33,6 +35,9 @@ VIEW_PATH = os.path.join(ROOT_PATH, "views")
 STATIC_PATH = os.path.join(ROOT_PATH, "static")
 STATIC_URL = r"/static/(.+)"
 TEMPLATE_CACHE = {}
+
+class FunnlServer(ThreadingMixIn, WSGIServer):
+    pass
 
 class WSGIQuietHandler(WSGIRequestHandler):
     
@@ -171,6 +176,7 @@ class Server(object):
             handler = WSGIQuietHandler
         server = make_server(
             address, port, self.app, 
+            server_class=FunnlServer,
             handler_class=handler
         )
         if not address:
