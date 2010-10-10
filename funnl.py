@@ -1,3 +1,70 @@
+# Funnl is an open-source one-file WSGI framework.
+# http://github.com/joshmarshall/funnl
+#
+# Copyright 2010 Josh Marshall
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+"""
+FUNNL
+=====
+Here's a simple usage example:
+-----------------------
+from funnl import Handler, Server
+
+class Page(Handler):
+    route = r'/page_id/(a-z0-9_\-)+'
+    
+    def get(self, page_id):
+        return self.render('page.htm', page_id=page_id)
+        
+server = Server()
+server.add_handler(Page)
+server.serve(port=8080)
+--------------------------
+You should also be able to pass "server" into any server / middleware 
+that expects a WSGI-compatbile application. Just like any normal WSGI
+application, you can return arbitrary text or even a generator if 
+necessary (for example, if you are reading from a file. The StaticHandler
+does this.)
+
+By default the "render" and "render_list" method look for a "views" 
+sub-folder in your current directory, but you can easily overwrite this
+using the view_path server configuration option:
+
+server = Server(view_path='/var/www/views')
+
+Serving static files is easy. To use a "static" sub-folder in your
+current directory, all you have to do is run:
+
+server.enable_static()
+
+Your files will be available under the /static path. For example, the
+URL to a  file in your static folder that is at the location 
+"images/favicon.ico" would be:
+
+http://HOST:PORT/static/images/favicon.ico
+
+If you want to serve static files in another directory or with a
+different URL, just pass one or both parameters to Server:
+
+server = Server(
+    static_path='/var/www/static', 
+    static_url=r'/files/(.+)'
+)
+server.enable_static()
+"""
+
 import re
 import sys
 import os
